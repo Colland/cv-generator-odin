@@ -5,6 +5,11 @@
   html, body {
     @apply bg-gray-50;
   }
+
+  h1, h2, h3, h4, h5, h6, label {
+    font-family: var(--font-header);
+    @apply text-gray-900;
+  }
 }
 
 @theme {
@@ -29,12 +34,4 @@
            text-xs font-bold
            transition-all duration-100 scale-0 origin-left
   }
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-header);
-}
-
-p {
-  font-family: var(--font-body);
 }
