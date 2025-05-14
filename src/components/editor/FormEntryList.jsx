@@ -1,24 +1,39 @@
 import { useState } from 'react';
-import EducationForm from './InputListForms/EducationForm';
-import ExperienceForm from './InputListForms/ExperienceForm';
-import ReferenceForm from './InputListForms/ReferenceForm';
+import EducationForm from './formSections/EducationForm';
+import ExperienceForm from './formSections/ExperienceForm';
+import ReferenceForm from './formSections/ReferenceForm';
 import { v4 as uuidv4 } from 'uuid';
-import { mockEducationData, mockExperienceData, mockReferenceData } from '../../data/mockInputData';
  
-function FormInputList({ type }) {
-  const [itemDataList, setItemDataList] = useState(getInitialMockData(type));
+function FormEntryList({ type, cvData, setCvData }) {
   const [currentItemData, setCurrentItemData] = useState(getInitialItemData(type));
   const [ItemViewActive, setItemViewActive] = useState(false);
 
+  const inputTypeMap = {
+    education: "education",
+    experience: "experience",
+    references: "references"
+  };
+
+  const itemList = cvData[inputTypeMap[type]];
+
   function saveItem() {
-    const foundItem = itemDataList.find((item) => item.id === currentItemData.id);
+    const inputTypeKey = inputTypeMap[type];
+
+    const foundItem = itemList.find((item) => item.id === currentItemData.id);
+    let updatedSection;
 
     if(foundItem) {
-      setItemDataList([...itemDataList.map((item) => (item.id === currentItemData.id) ? currentItemData : item)])
+      updatedSection = itemList.map((item) => (item.id === currentItemData.id) ? currentItemData : item);
     }
     else {
-      setItemDataList([...itemDataList, currentItemData]);
+      updatedSection = [...itemList, currentItemData];
     }
+
+    setCvData({
+      ...cvData,
+      [inputTypeKey]: updatedSection
+    })
+
     setCurrentItemData(getInitialItemData(type));
     setItemViewActive(false);
   }
@@ -41,7 +56,7 @@ function FormInputList({ type }) {
       case "experience":
         return "Add a job";
 
-      case "reference":
+      case "references":
         return "Add a reference"
 
       default:
@@ -71,7 +86,7 @@ function FormInputList({ type }) {
           description: '',
         };
 
-        case "reference":
+        case "references":
           return {
             id: uuidv4(),
             referenceName: '',
@@ -83,22 +98,6 @@ function FormInputList({ type }) {
           return null;
     }
   };
-
-  function getInitialMockData(type) {
-    switch(type) {
-      case "education":
-        return mockEducationData;
-      
-      case "experience":
-        return mockExperienceData;
-
-      case "reference":
-        return mockReferenceData;
-
-      default:
-        return null;
-    }
-  }
 
   if(ItemViewActive) {
     return (
@@ -117,7 +116,7 @@ function FormInputList({ type }) {
                         onSave={saveItem} />
       )}
 
-      {type === "reference" && (
+      {type === "references" && (
         <ReferenceForm itemData={currentItemData}
                       setItemData={setCurrentItemData}
                       onCancel={cancelItem}
@@ -130,7 +129,7 @@ function FormInputList({ type }) {
   {
     return (
       <div className="flex flex-col bg-white border-t-1 border-t-gray-100 text-gray-800">
-        {itemDataList.map((itemData) => {return <FormInputListItem key={itemData.id} itemData={itemData} itemType={type} editItem={goToEditItem}/>})}
+        {itemList.map((itemData) => {return <FormEntry key={itemData.id} itemData={itemData} itemType={type} editItem={goToEditItem} />})}
 
         <div className="bg-white p-2 flex justify-center items-center font-header px-3 py-2.5 cursor-pointer text-gray-500"
              onClick={() => setItemViewActive(true)}>
@@ -143,9 +142,9 @@ function FormInputList({ type }) {
     )
   }
 }
-export default FormInputList;
+export default FormEntryList;
 
-function FormInputListItem({ itemData, itemType, editItem }) {
+function FormEntry({ itemData, itemType, editItem }) {
   if(itemType === "education")
   {
     return (
@@ -179,7 +178,7 @@ function FormInputListItem({ itemData, itemType, editItem }) {
       </div>
     )
   }
-  else if(itemType === "reference") {
+  else if(itemType === "references") {
     return (
       <div onClick={() => editItem(itemData)} 
            className="flex flex-col px-3 py-3 border-b-3 bg-white border-gray-100 font-header cursor-pointer"

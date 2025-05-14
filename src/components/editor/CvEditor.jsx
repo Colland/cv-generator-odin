@@ -5,16 +5,16 @@ import { MdOutlineWorkOutline } from "react-icons/md";
 import { TbWriting } from "react-icons/tb";
 
 import { useState } from 'react';
-import PersonalDetailInput from "./CvFormSectionInputs/PersonalDetailInput";
-import FormInputList from "./CvFormSectionInputs/FormInputList";
+import PersonalDetailForm from "./formSections/PersonalDetailForm";
+import FormEntryList from "./FormEntryList";
 
-function CvForm() {
+function CvEditor({cvData, setCvData}) {
   return (
     <div className=" w-120 h-full flex flex-col">
-      <CvFormSection title="Personal Details" icon={<IoPersonSharp size="21px"/>} content={<PersonalDetailInput />} />
-      <CvFormSection title="Education" icon={<FaSchool size="21px" />} content={<FormInputList type="education" />} />
-      <CvFormSection title="Work Experience" icon={<MdOutlineWorkOutline size="21px"/>} content={<FormInputList type="experience" />} />
-      <CvFormSection title="References" icon={<TbWriting size="21px" />}  content={<FormInputList type="reference"/>}/>
+      <CvFormSection title="Personal Details" icon={<IoPersonSharp size="21px"/>} content={<PersonalDetailForm cvData={cvData} setCvData={setCvData} />} />
+      <CvFormSection title="Education" icon={<FaSchool size="21px" />} content={<FormEntryList type="education" cvData={cvData} setCvData={setCvData} />} />
+      <CvFormSection title="Work Experience" icon={<MdOutlineWorkOutline size="21px"/>} content={<FormEntryList type="experience" cvData={cvData} setCvData={setCvData} />} />
+      <CvFormSection title="References" icon={<TbWriting size="21px" />}  content={<FormEntryList type="references" cvData={cvData} setCvData={setCvData} />} />
     </div>
   )
 }
@@ -52,4 +52,4 @@ function CvFormSection({ title, icon, content }) {
   )
 }
 
-export default CvForm;
+export default CvEditor;
