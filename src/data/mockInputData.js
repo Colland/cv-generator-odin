@@ -5,14 +5,17 @@ export const mockEducationData = [
     id: uuidv4(),
     uniName: "University of Auckland",
     degree: "Bachelors in Computer Science",
-    startDate: "2024-06", endDate: "2025-01"
+    startDate: "2024-06",
+    endDate: "2025-01",
+    location: "Auckland, New Zealand"
   },
   {
     id: uuidv4(),
     uniName: "University of Technology",
     degree: "Bachelors in Law and Commerce", 
     startDate: "2024-06", 
-    endDate: "2025-01"
+    endDate: "2025-01",
+    location: "Des Moines, Iowa"
   }
 ]
 

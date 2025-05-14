@@ -3,7 +3,9 @@ import EducationForm from './formSections/EducationForm';
 import ExperienceForm from './formSections/ExperienceForm';
 import ReferenceForm from './formSections/ReferenceForm';
 import { v4 as uuidv4 } from 'uuid';
- 
+
+import { AiFillDelete } from "react-icons/ai";
+
 function FormEntryList({ type, cvData, setCvData }) {
   const [currentItemData, setCurrentItemData] = useState(getInitialItemData(type));
   const [ItemViewActive, setItemViewActive] = useState(false);
@@ -36,6 +38,16 @@ function FormEntryList({ type, cvData, setCvData }) {
 
     setCurrentItemData(getInitialItemData(type));
     setItemViewActive(false);
+  }
+
+  function deleteItem(itemId) {
+    const filteredItems = itemList.filter((item) => item.id !== itemId);
+    const inputTypeKey = inputTypeMap[type];
+
+    setCvData({
+      ...cvData,
+      [inputTypeKey]: filteredItems
+    })
   }
 
   function cancelItem() {
@@ -129,7 +141,7 @@ function FormEntryList({ type, cvData, setCvData }) {
   {
     return (
       <div className="flex flex-col bg-white border-t-1 border-t-gray-100 text-gray-800">
-        {itemList.map((itemData) => {return <FormEntry key={itemData.id} itemData={itemData} itemType={type} editItem={goToEditItem} />})}
+        {itemList.map((itemData) => { return <FormEntry key={itemData.id} itemData={itemData} itemType={type} editItem={goToEditItem} deleteItem={deleteItem} /> })}
 
         <div className="bg-white p-2 flex justify-center items-center font-header px-3 py-2.5 cursor-pointer text-gray-500"
              onClick={() => setItemViewActive(true)}>
@@ -144,52 +156,82 @@ function FormEntryList({ type, cvData, setCvData }) {
 }
 export default FormEntryList;
 
-function FormEntry({ itemData, itemType, editItem }) {
-  if(itemType === "education")
-  {
+function FormEntry({ itemData, itemType, editItem, deleteItem }) {
+  if (itemType === "education") {
     return (
-      <div onClick={() => editItem(itemData)} 
-           className="flex flex-col px-3 py-3 border-b-3 bg-white border-gray-100 font-header cursor-pointer"
+      <div
+        className="relative group border-b-3 bg-white border-gray-100 font-header cursor-pointer px-3 py-3"
       >
-
-        <div className="flex justify-between items-center">
-          <p className="text-[#253b9e]">{itemData.uniName}</p>
-          <p className="text-[14px] italic">{itemData.startDate.slice(0, 7) + " - " + itemData.endDate.slice(0, 7)}</p>
+        <div
+          onClick={() => editItem(itemData)}
+          className="flex flex-col w-full relative group-hover:-translate-x-[50px] transition-transform duration-200"
+        >
+          <div className="flex justify-between items-center">
+            <p className="text-[#253b9e]">{itemData.uniName}</p>
+            <p className="text-[14px] italic">
+              {itemData.startDate.slice(0, 7)} - {itemData.endDate.slice(0, 7)}
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <p className="italic text-xs">{itemData.degree}</p>
+          </div>
         </div>
-        <div className="flex justify-between">
-          <p className="italic text-xs">{itemData.degree}</p>
+
+        <div
+          onClick={() => deleteItem(itemData.id)}
+          className="absolute top-0 right-0 h-full w-[50px] bg-red-400 translate-x-full group-hover:translate-x-0 transition-transform duration-200 flex items-center justify-center text-white">
+          <AiFillDelete size="20px" />
         </div>
       </div>
-    )
+    );
   }
   else if(itemType === "experience") {
     return (
-      <div onClick={() => editItem(itemData)} 
-           className="flex flex-col px-3 py-3 border-b-3 bg-white border-gray-100 font-header cursor-pointer"
-      >
-
-        <div className="flex justify-between items-center">
-          <p className="text-[#253b9e]">{itemData.companyName}</p>
-          <p className="text-[14px] italic">{itemData.startDate.slice(0, 7) + " - " + itemData.endDate.slice(0, 7)}</p>
+      <div className="relative group border-b-3 bg-white border-gray-100 font-header cursor-pointer px-3 py-3">
+        <div
+          onClick={() => editItem(itemData)}
+          className="flex flex-col w-full relative group-hover:-translate-x-[50px] transition-transform duration-200"
+        >
+          <div className="flex justify-between items-center">
+            <p className="text-[#253b9e]">{itemData.companyName}</p>
+            <p className="text-[14px] italic">{itemData.startDate.slice(0, 7) + " - " + itemData.endDate.slice(0, 7)}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="italic text-xs">{itemData.jobTitle}</p>
+          </div>
         </div>
-        <div className="flex justify-between">
-          <p className="italic text-xs">{itemData.jobTitle}</p>
+
+        <div
+          onClick={() => deleteItem(itemData.id)}
+          className="absolute top-0 right-0 h-full w-[50px] bg-red-400 translate-x-full group-hover:translate-x-0 transition-transform duration-200 flex items-center justify-center text-white"
+        >
+          <AiFillDelete size="20px" />
         </div>
       </div>
     )
   }
   else if(itemType === "references") {
     return (
-      <div onClick={() => editItem(itemData)} 
-           className="flex flex-col px-3 py-3 border-b-3 bg-white border-gray-100 font-header cursor-pointer"
-      >
+      <div className="relative group border-b-3 bg-white border-gray-100 font-header cursor-pointer px-3 py-3">
 
-        <div className="flex justify-between items-center">
-          <p className="text-[#253b9e]">{itemData.referenceName}</p>
-          <p className="text-[14px] italic">{itemData.email}</p>
+        <div
+          onClick={() => editItem(itemData)}
+          className="w-full relative group-hover:-translate-x-[50px] transition-transform duration-200"
+        >
+          <div className="flex justify-between items-center">
+            <p className="text-[#253b9e]">{itemData.referenceName}</p>
+            <p className="text-[14px] italic">{itemData.email}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="italic text-xs">{itemData.relation}</p>
+          </div>
         </div>
-        <div className="flex justify-between">
-          <p className="italic text-xs">{itemData.relation}</p>
+
+        <div
+          onClick={() => deleteItem(itemData.id)}
+          className="absolute top-0 right-0 h-full w-[50px] bg-red-400 translate-x-full group-hover:translate-x-0 transition-transform duration-200 flex items-center justify-center text-white"
+        >
+          <AiFillDelete size="20px" />
         </div>
     </div>
     )
